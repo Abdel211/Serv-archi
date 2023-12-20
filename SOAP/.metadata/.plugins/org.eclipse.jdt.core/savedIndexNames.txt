@@ -1,0 +1,26 @@
+INDEX VERSION 1.131+U:\Windows\Bureau\Service_archi\SOAP\.metadata\.plugins\org.eclipse.jdt.core
+2674025601.index
+1819341519.index
+1067699578.index
+3741886129.index
+139446966.index
+1219479392.index
+3648451348.index
+1721544244.index
+3267953796.index
+1748481934.index
+1327914146.index
+3922755870.index
+1543926619.index
+813738499.index
+346123624.index
+1216155750.index
+1468553286.index
+3682109363.index
+1674336697.index
+263950299.index
+613267461.index
+23670287.index
+1865797976.index
+368153300.index
+1679264239.index

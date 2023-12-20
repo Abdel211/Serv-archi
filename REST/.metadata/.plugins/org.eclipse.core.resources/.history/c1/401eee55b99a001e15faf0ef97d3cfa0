@@ -1,0 +1,33 @@
+package fr.insa.soa.RESST;
+
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.MediaType;
+import java.util.ArrayList;
+import java.util.List;
+
+@Path("requests")
+public class RequestResource {
+
+    private List<Request> requests;
+
+    public RequestResource() {
+        requests = new ArrayList<>(); // Initialisation de la liste des demandes
+    }
+
+    @POST
+    @Path("add")
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    public String addNewRequest(
+            @FormParam("requesterName") String requesterName,
+            @FormParam("requestDetails") String requestDetails
+    ) {
+        // Créer une nouvelle demande
+        Request newRequest = new Request(requesterName, requestDetails);
+
+        // Ajouter la demande à la liste
+        requests.add(newRequest);
+
+        // Retourner un message de confirmation
+        return "Demande de " + requesterName + " ajoutée avec succès.";
+    }
+}

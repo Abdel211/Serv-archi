@@ -1,0 +1,24 @@
+package fr.insa.soap;
+import javax.xml.ws.Endpoint;
+
+public class lancerservice {
+    public static void main(String[] args) {
+        lancerservice app = new lancerservice();
+        app.demarrerService();
+    }
+
+    public void demarrerService() {
+        // Définir l'URL de votre service web
+        String url = "http://localhost:8089/AddUser";
+
+        // Créer une instance de votre service web
+        AddUser addUserService = new AddUser();
+
+        // Publier le service web à l'URL spécifiée
+        Endpoint.publish(url, addUserService);
+
+        // Afficher un message indiquant que le service a été démarré avec succès
+        System.out.println("Service web AddUser démarré avec succès : " + url);
+    }
+}
+

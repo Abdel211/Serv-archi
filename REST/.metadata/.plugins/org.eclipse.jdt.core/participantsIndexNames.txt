@@ -1,0 +1,5 @@
+INDEX VERSION 1.131
+U:\Windows\Bureau\Service_archi\REST\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\1186783365.index
+\RestProject\src\main\java
+U:\Windows\Bureau\Service_archi\REST\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\3158156417.index
+\RESST\src\main\java

@@ -1,0 +1,7 @@
+INDEX VERSION 1.4+U:\Windows\Bureau\Service_archi\REST\.metadata\.plugins\org.eclipse.wst.jsdt.core\indexes
+2711977493.index
+644389607.index
+2434920565.index
+2340923130.index
+406280038.index
+3086833176.index

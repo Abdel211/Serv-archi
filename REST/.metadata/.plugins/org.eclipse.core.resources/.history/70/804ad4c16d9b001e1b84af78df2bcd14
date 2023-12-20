@@ -1,0 +1,145 @@
+package fr.insa.soa.RESST;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.Scanner;
+
+public class RestClient {
+
+    public static void main(String[] args) {
+        try {
+            Scanner scanner = new Scanner(System.in);
+
+            // Demande à l'utilisateur de saisir les détails du demandeur d'aide
+            System.out.print("Nom du demandeur d'aide : ");
+            String requesterName = scanner.nextLine();
+
+            System.out.print("Détails de la demande : ");
+            String requestDetails = scanner.nextLine();
+
+            // Création d'une nouvelle demande
+            int requestId = createNewRequest(requesterName, requestDetails);
+
+            // Demande à l'utilisateur de saisir les détails du volontaire
+            System.out.print("Nom du volontaire : ");
+            String volunteerName = scanner.nextLine();
+
+            System.out.print("Prénom du volontaire : ");
+            String volunteerFirstName = scanner.nextLine();
+
+            System.out.print("A-t-il des antécédents judiciaires ? (true/false) : ");
+            boolean hasCriminalRecord = scanner.nextBoolean();
+
+            System.out.print("Age du volontaire : ");
+            int volunteerAge = scanner.nextInt();
+
+            // Enregistrement d'un nouveau volontaire
+            registerVolunteer(volunteerName, volunteerFirstName, hasCriminalRecord, volunteerAge, requestId);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static int createNewRequest(String requesterName, String requestDetails) throws IOException {
+        int requestId = -1;
+        try {
+            // URL du service REST pour créer une demande
+            URL url = new URL("http://localhost:8080/RESST/webapi/requests/add");
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+            // Paramètres de la requête POST pour la demande
+            connection.setRequestMethod("POST");
+            connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            connection.setDoOutput(true);
+
+            // Données de la requête pour la demande
+            String requestData = "requesterName=" + requesterName + "&requestDetails=" + requestDetails;
+
+            // Envoi des données pour la demande
+            try (OutputStream outputStream = connection.getOutputStream()) {
+                outputStream.write(requestData.getBytes());
+            }
+
+            // Lecture de la réponse pour la demande
+            int responseCode = connection.getResponseCode();
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                String line;
+                StringBuilder response = new StringBuilder();
+
+                while ((line = reader.readLine()) != null) {
+                    response.append(line);
+                }
+
+                reader.close();
+                System.out.println("Réponse du service pour la demande : " + response.toString());
+
+                // Obtention de l'identifiant de la demande créée
+                requestId = Integer.parseInt(response.toString());
+            } else {
+                System.out.println("Erreur : " + responseCode);
+            }
+
+            // Fermeture de la connexion pour la demande
+            connection.disconnect();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return requestId;
+    }
+
+    private static void registerVolunteer(String volunteerName, String volunteerFirstName, boolean hasCriminalRecord, int volunteerAge, int requestId) {
+        try {
+            // URL pour enregistrer un nouveau volontaire
+            URL url = new URL("http://localhost:8080/RESST/webapi/requests/volontaires");
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+            // Paramètres de la requête POST pour le volontaire
+            connection.setRequestMethod("POST");
+            connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            connection.setDoOutput(true);
+
+            // Données de la requête pour le volontaire
+            String volunteerData = "nom=" + volunteerName + "&prenom=" + volunteerFirstName +
+                    "&aAntecedentsJudiciaires=" + hasCriminalRecord + "&age=" + volunteerAge;
+
+            // Envoi des données pour le volontaire
+            try (OutputStream outputStream = connection.getOutputStream()) {
+                outputStream.write(volunteerData.getBytes());
+            }
+
+            // Lecture de la réponse pour le volontaire
+            int responseCode = connection.getResponseCode();
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                String line;
+                StringBuilder response = new StringBuilder();
+
+                while ((line = reader.readLine()) != null) {
+                    response.append(line);
+                }
+
+                reader.close();
+                System.out.println("Réponse du service pour le volontaire : " + response.toString());
+                
+                // Décision d'accepter ou rejeter le volontaire en fonction de certains critères
+                if (response.toString().equals("Le volontaire n'est pas accepté pour les raisons spécifiées.")) {
+                    System.out.println("Le volontaire n'a pas été accepté.");
+                } else {
+                    System.out.println("Le volontaire a été accepté.");
+                }
+            } else {
+                System.out.println("Erreur : " + responseCode);
+            }
+
+            // Fermeture de la connexion pour le volontaire
+            connection.disconnect();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}

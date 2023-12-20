@@ -1,0 +1,57 @@
+package fr.insa.soa.RESST;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.Scanner;
+
+public class RestClient {
+
+    public static void main(String[] args) {
+        try {
+            Scanner scanner = new Scanner(System.in);
+
+            System.out.print("Entrez le nom du demandeur : ");
+            String requesterName = scanner.nextLine();
+
+            System.out.print("Entrez les détails de la demande : ");
+            String requestDetails = scanner.nextLine();
+
+            URL url = new URL("http://localhost:8080/RESST/webapi/requests/add");
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+            connection.setRequestMethod("POST");
+            connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            connection.setDoOutput(true);
+
+            String data = "requesterName=" + requesterName + "&requestDetails=" + requestDetails;
+
+            try (OutputStream outputStream = connection.getOutputStream()) {
+                outputStream.write(data.getBytes());
+            }
+
+            int responseCode = connection.getResponseCode();
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                String line;
+                StringBuilder response = new StringBuilder();
+
+                while ((line = reader.readLine()) != null) {
+                    response.append(line);
+                }
+
+                reader.close();
+                System.out.println("Réponse du service : " + response.toString());
+            } else {
+                System.out.println("Erreur : " + responseCode);
+            }
+
+            connection.disconnect();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}

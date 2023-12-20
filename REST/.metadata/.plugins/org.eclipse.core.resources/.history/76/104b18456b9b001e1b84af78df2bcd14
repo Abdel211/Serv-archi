@@ -1,0 +1,9 @@
+package fr.insa.soa.RESST;
+
+public class Volontaires {
+    private String nom;
+    private String prenom;
+    private boolean aAntecedentsJudiciaires;
+    private int age;
+    
+}
